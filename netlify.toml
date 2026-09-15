@@ -1,0 +1,13 @@
+[build]
+  base = "dashboard"
+  command = "npm run build"
+  publish = "dashboard/dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Single-page app: every route serves the same page.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

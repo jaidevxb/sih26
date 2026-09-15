@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SIH 2026 — PS 26061 Plan</title>
+<style>
+  @page { size: A4; margin: 14mm 13mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", "Nirmala UI", system-ui, sans-serif;
+    font-size: 9.4pt; line-height: 1.42; color: #16181d; margin: 0;
+  }
+  h1 { font-size: 16pt; margin: 0 0 2pt; letter-spacing: -.3px; }
+  .sub { font-size: 8.6pt; color: #5b6270; margin: 0 0 10pt; padding-bottom: 7pt;
+         border-bottom: 2px solid #1a3a6b; }
+  h2 { font-size: 11pt; margin: 13pt 0 5pt; color: #1a3a6b;
+       border-bottom: 1px solid #c9d4e4; padding-bottom: 2pt; }
+  h3 { font-size: 9.6pt; margin: 9pt 0 3pt; color: #24303f; }
+  p { margin: 0 0 5pt; }
+  ul, ol { margin: 0 0 5pt; padding-left: 15pt; }
+  li { margin-bottom: 2.5pt; }
+  code { font-family: Consolas, monospace; font-size: 8.6pt;
+         background: #eef1f6; padding: 0 2px; border-radius: 2px; }
+  strong { color: #0d1117; }
+  .lead { background: #f2f6fc; border-left: 3px solid #1a3a6b;
+          padding: 7pt 9pt; margin: 0 0 9pt; }
+  .lead p:last-child { margin-bottom: 0; }
+  .arch { font-family: Consolas, monospace; font-size: 8.3pt; line-height: 1.5;
+          background: #f5f7fa; border: 1px solid #dde3ec; padding: 7pt 9pt;
+          margin: 0 0 8pt; white-space: pre; }
+  table { width: 100%; border-collapse: collapse; font-size: 8.8pt; margin: 0 0 7pt; }
+  th { background: #1a3a6b; color: #fff; text-align: left; padding: 3.5pt 6pt; font-weight: 600; }
+  td { padding: 3.5pt 6pt; border-bottom: 1px solid #e3e8f0; vertical-align: top; }
+  .note { background: #fff8e8; border-left: 3px solid #c9901a; padding: 6pt 9pt; margin: 0 0 8pt; }
+  .note p:last-child { margin-bottom: 0; }
+  .phase { margin-bottom: 5pt; }
+  .phase b { color: #1a3a6b; }
+  .cols { column-count: 2; column-gap: 14pt; }
+  .cols h3 { margin-top: 0; break-after: avoid; }
+  .blk { break-inside: avoid; margin-bottom: 7pt; }
+  .avoid { break-inside: avoid; }
+  footer { margin-top: 12pt; padding-top: 5pt; border-top: 1px solid #c9d4e4;
+           font-size: 8pt; color: #6b7280; }
+</style>
+</head>
+<body>
+
+<h1>HIMSHAKTI / KAVACH — SIH 2026 Project Plan</h1>
+<p class="sub"><strong>PS 26061</strong> · AI-Driven Smart Energy Management System for Polar Research
+Stations · Ministry of Earth Sciences (MoES) / NCPOR · Software · Clean &amp; Green Technology</p>
+
+<h2>1. Context &amp; framing</h2>
+<div class="lead">
+<p>The PS text is deliberately thin, so the framing is ours to choose — and the framing decides whether we
+win.</p>
+<p><strong>Our framing:</strong> NCPOR's stations (Maitri, Bharati in Antarctica; Himadri in the Arctic) are
+electrical islands resupplied with diesel <strong>once a year, by ship</strong>. That single fact dominates
+everything. Fuel is not a cost line — it is the survival margin. So we are not building a green dashboard.
+We are building a <strong>fuel-survival optimizer</strong>, with a days-of-autonomy countdown as the hero
+metric.</p>
+</div>
+
+<h3>The technical insight the whole pitch rests on</h3>
+<p>A diesel genset at 25 % load burns roughly <strong>1.5–2× more fuel per kWh</strong> than at 75 %, and
+below ~30 % it wet-stacks and damages itself. But you cannot simply switch it off, because its
+<strong>waste heat</strong> is what heats the buildings and melts snow for water. Electricity and heat are
+<strong>coupled</strong> — optimise them separately and you get the wrong answer. Co-optimising them is the
+core of our solution, and the thing competing teams will miss.</p>
+
+<h3>Locked decisions</h3>
+<ul>
+<li><strong>Station modelled:</strong> Bharati — year-round crew, modern, best documented.</li>
+<li><strong>Centrepiece:</strong> fuel-survival optimizer. <strong>Engine:</strong> rule-based + MILP hybrid.</li>
+<li><strong>Hardware-in-the-loop:</strong> optional stretch goal only, after software is locked.</li>
+<li><strong>Stage:</strong> internal hackathon + idea PPT first, built to extend to the December Grand Finale
+without rework. SPOC has approved; dates pending.</li>
+<li><strong>Product name:</strong> team to choose — <strong>HIMSHAKTI</strong> (हिम snow + शक्ति power) or
+<strong>KAVACH</strong> (कवच armour/shield).</li>
+</ul>
+
+<h2>2. Why the optimizer, and not the other three options</h2>
+<div class="note">
+<p>This is a decision about <strong>what leads the pitch and where the depth goes</strong> — not about what we
+cut. Forecasting and blizzard-response are both still built. They just aren't the headline.</p>
+</div>
+
+<div class="blk">
+<h3>Why not forecasting as the centrepiece?</h3>
+<p>A forecast answers <em>"what will happen."</em> It never answers <em>"so what do we do about it."</em> The
+first question any judge asks is "and then?" — if the answer is a chart, we've lost. Worse, forecasting is the
+<strong>commodity</strong> choice: most teams picking this PS will build exactly this, putting us in a
+comparison on MAPE, a number NCPOR does not care about. We get forecasting anyway as Layer 2. We just don't
+lead with it.</p>
+</div>
+
+<div class="blk">
+<h3>Why not blizzard / crisis resilience?</h3>
+<p>Dramatic, but narrow. A blizzard is an edge case lasting a few days a year; NCPOR's actual problem is 365
+days of fuel discipline. It is also hard to quantify — <em>"the crew survived"</em> is not a number that fits
+on a slide, and unquantified claims lose to measured ones. In our design this is a <strong>scenario
+button</strong>, not a product: we still get the drama on stage, we just don't build the company around it.</p>
+</div>
+
+<div class="blk">
+<h3>Why not all of them, equally weighted?</h3>
+<p>This is the classic way strong teams lose. A SIH pitch is a few minutes long — split evenly across four
+capabilities, each gets about a minute, and nothing is memorable. Judges retain <strong>one number</strong>.
+Equal weighting also splits build time into four mediocre modules instead of one excellent one with three
+solid supports. Against domain experts, depth beats breadth every time.</p>
+</div>
+
+<div class="blk">
+<h3>Why the fuel-survival optimizer wins</h3>
+<ol>
+<li>It is the only option producing a <strong>single defensible number tied to the mission</strong> — extra
+days of autonomy. Everything else produces charts.</li>
+<li>It is where <strong>EEE knowledge is a moat</strong>: genset efficiency curves, minimum stable load, N-1
+reserve, waste-heat coupling. A CS-heavy team cannot easily reach this, and MoES judges will recognise it.</li>
+<li>It addresses the PS's own third clause — <em>"fuel optimization"</em> — which is also NCPOR's real
+operational pain, given one resupply ship a year.</li>
+<li><strong>It subsumes the others.</strong> Forecasting becomes its input; blizzard response becomes a
+scenario it handles. Choosing it loses us nothing and focuses everything.</li>
+</ol>
+</div>
+
+<h2>3. Architecture — five layers</h2>
+<div class="arch">[L1 PolarSim]   physics-based digital twin  →  synthetic year of station data
+      ↓
+[L2 Forecast]   24–72 h ahead: elec load, heat load, solar, wind
+      ↓
+[L3 Optimizer]  MILP rolling-horizon dispatch (+ rule-based fallback)   ← THE HERO
+      ↓
+[L4 Fuel Ledger] annual budget, days-of-autonomy, stockout risk
+      ↓
+[L5 Dashboard]  live sim + scenario playground + baseline-vs-AI comparison</div>
+
+<div class="blk">
+<h3>L1 — PolarSim (digital twin)</h3>
+<p><em>Why it exists:</em> there is no public NCPOR energy dataset — nobody at SIH will have real telemetry.
+So we write a physics-grounded simulator, calibrate it against published Antarctic station energy studies, and
+state this openly in the PPT as a methodology choice, not an apology. It also lets us demo a blizzard on
+stage, which real data never would. Generates 1 year at 15-min resolution:</p>
+<ul>
+<li><strong>Weather</strong> — temperature, windspeed, solar elevation with true polar-night / midnight-sun
+cycles; blizzards as correlated wind/temperature excursions.</li>
+<li><strong>Building thermal</strong> — heat loss <code>Q = U·A·ΔT</code> plus ventilation and infiltration;
+snow-melt water demand vs crew size.</li>
+<li><strong>Occupancy</strong> — summer campaign (~50–60) vs winter-over (~20–25). Biggest single load driver.</li>
+<li><strong>Load library</strong> — every load tagged <code>critical</code> / <code>deferrable</code> /
+<code>sheddable</code>, with a power profile and, for deferrables, a completion deadline.</li>
+<li><strong>Assets</strong> — 2–3 gensets with non-linear fuel curves (L/h vs load factor), waste-heat recovery,
+backup boiler, cold-derated battery, PV with snow soiling, wind turbine with cut-in/cut-out and icing lockout.</li>
+<li><strong>Event injection</strong> — <code>blizzard(days)</code>, <code>genset_failure(id)</code>,
+<code>resupply_delay(days)</code>, <code>crew_surge(n)</code>.</li>
+</ul>
+</div>
+
+<div class="blk">
+<h3>L2 — Forecast</h3>
+<ul>
+<li>Targets: electrical load, thermal load, PV availability, wind availability. Horizon 72 h, hourly.</li>
+<li>LightGBM on lag features + rolling stats + weather + occupancy + calendar. Small, trains in seconds, runs
+on station hardware with no GPU — say this, it's a credibility point.</li>
+<li><strong>Always report against a naive baseline</strong> (persistence / seasonal-naive). The lift is the
+story, not the absolute number.</li>
+<li>Emit <strong>P10/P50/P90</strong> quantiles, not a point forecast — the optimizer needs the uncertainty to
+size reserve.</li>
+</ul>
+</div>
+
+<div class="blk">
+<h3>L3 — Optimizer (build this <u>before</u> the forecaster)</h3>
+<p>Rolling-horizon MILP, 48 h lookahead, 1 h steps, re-solved each step. OR-Tools CP-SAT or PuLP/CBC.</p>
+<ul>
+<li><strong>Decisions:</strong> genset on/off (binary) and loading per unit; battery charge/discharge;
+deferrable load start times; boiler firing; renewable curtailment.</li>
+<li><strong>Objective:</strong> minimise litres burned, plus penalties for genset starts (wear), unmet thermal
+comfort, and unserved critical load (effectively infinite).</li>
+<li><strong>Constraints that carry the pitch:</strong> electrical balance; <strong>thermal balance including
+recovered waste heat</strong> (the coupling — our differentiator); genset minimum stable load (anti
+wet-stacking) and min up/down times; battery SoC with <strong>cold-temperature derating</strong>; deferrable
+deadlines; <strong>N-1 spinning reserve</strong> (survive the largest genset tripping).</li>
+<li><strong>Rule-based fallback:</strong> a deterministic priority dispatcher that always returns a feasible
+answer. If the solver stalls on stage, the demo continues. Not a hack — a life-safety system genuinely needs a
+deterministic path, so we present it as a design virtue.</li>
+<li><strong>Baseline for comparison:</strong> "always-on largest genset, no load shifting" — what stations
+realistically do today. Every saving we claim is measured against this.</li>
+</ul>
+</div>
+
+<div class="blk">
+<h3>L4 — Fuel Ledger &nbsp;·&nbsp; L5 — Dashboard</h3>
+<ul>
+<li>Annual fuel burndown against the next resupply date; <strong>days-of-autonomy</strong> as the hero number;
+Monte Carlo over weather and occupancy → <strong>probability of stockout before resupply</strong>.</li>
+<li>What-if: <em>"ship delayed 21 days — do we survive?"</em> Answered with a number, in front of the judges.</li>
+<li>Dashboard hero panel: days-of-autonomy gauge + AI-vs-baseline fuel curves diverging over the year. Then
+accelerated sim clock, stacked dispatch chart (genset / PV / wind / battery), forecast-vs-actual.</li>
+<li><strong>Scenario buttons:</strong> Blizzard · Genset Failure · Resupply Delayed · Crew Surge.</li>
+<li><strong>Money slide, on screen:</strong> litres saved, % reduction, <strong>extra days of autonomy
+gained</strong>, CO₂ avoided.</li>
+</ul>
+</div>
+
+<h2>4. Stack</h2>
+<table>
+<tr><th style="width:16%">Layer</th><th style="width:40%">Choice</th><th>Why</th></tr>
+<tr><td>Core</td><td>Python 3.11</td><td>simulator, ML and optimizer in one language</td></tr>
+<tr><td>Optimizer</td><td>OR-Tools CP-SAT (fallback PuLP/CBC)</td><td>fast, free, no licence</td></tr>
+<tr><td>ML</td><td>LightGBM + pandas / numpy</td><td>CPU-only, seconds to train</td></tr>
+<tr><td>API</td><td>FastAPI + WebSocket</td><td>streams live sim ticks to the UI</td></tr>
+<tr><td>Frontend</td><td>React + Vite + Recharts + Tailwind</td><td>fast to build, looks finished</td></tr>
+<tr><td>Storage</td><td>SQLite / Parquet</td><td>zero-config, offline-first</td></tr>
+</table>
+<p><strong>Offline-first is a required talking point.</strong> Stations have thin, expensive satellite links.
+Everything runs on-prem on modest hardware — no cloud, no GPU. Say it explicitly; MoES judges will care.</p>
+
+<h2>5. Build phases</h2>
+<div class="phase"><b>Phase 0 — Foundation (½ day).</b> Repo scaffold, station-profile config schema, shared
+timestep data model.</div>
+<div class="phase"><b>Phase 1 — PolarSim (1½ days).</b> Weather, thermal, occupancy, load library, assets,
+event injection. Ship a generated year as Parquet plus plots that look physically plausible.
+<em>Gate: the annual profile must be defensible to an EEE professor.</em></div>
+<div class="phase"><b>Phase 2 — Optimizer + baseline (2 days) ← highest value, do it early.</b> Rule-based
+dispatcher first, then MILP, then baseline, then the comparison harness. Initially run with <strong>perfect
+foresight</strong> (feed it the simulator's true future) so it can be built and validated before the
+forecaster exists. <em>Gate: MILP beats baseline on fuel by a clear, reproducible margin.</em></div>
+<div class="phase"><b>Phase 3 — Forecast (1 day).</b> Train models, swap them in behind the same interface
+perfect-foresight used. Measure how much of the saving survives real forecast error — <strong>report that
+honestly</strong>; it signals rigour, and judges probe for it.</div>
+<div class="phase"><b>Phase 4 — Dashboard (2 days).</b> Hero panel, then dispatch charts, then scenario
+buttons. Do not start the UI until Phase 2 produces numbers worth displaying.</div>
+<div class="phase"><b>Phase 5 — Pitch (1 day).</b> PPT in SIH format, a rehearsed 3-minute demo script, and a
+recorded fallback video in case the laptop or venue Wi-Fi fails.</div>
+<div class="phase"><b>Stretch (finale only).</b> ESP32 + current sensors + relays driving a lamp/heater as a
+physical micro-grid, commanded by our controller. Powerful for an EEE team — but only after software is
+locked.</div>
+
+<h2>6. Idea PPT — section map</h2>
+<ol>
+<li><strong>Problem</strong> — one year of fuel, one ship, no second chance. Lead with the constraint, not the
+technology.</li>
+<li><strong>Solution</strong> — the five layers, one diagram.</li>
+<li><strong>Differentiator</strong> — heat/electricity coupling and genset low-load inefficiency. State plainly
+that electrical-only optimisation is wrong, and why.</li>
+<li><strong>Technical approach</strong> — stack, MILP formulation sketch, forecast lift over baseline.</li>
+<li><strong>Feasibility</strong> — offline, CPU-only, retrofits onto existing meters; deterministic fallback
+for life safety.</li>
+<li><strong>Impact</strong> — litres saved → days of autonomy → reduced resupply risk → CO₂ and black-carbon
+reduction in a protected environment (Antarctic Treaty / Madrid Protocol framing).</li>
+<li><strong>Research</strong> — published Antarctic station energy studies, NCPOR expedition reports, Maitri
+II's stated green-station goal. Show the simulator is calibrated, not invented.</li>
+</ol>
+
+<h2>7. Verification</h2>
+<ul>
+<li><strong>Physical sanity</strong> — annual energy per capita and fuel burn land inside the range published
+for comparable Antarctic stations. If the sim says a 25-person station burns 20 L/day, it's wrong.</li>
+<li><strong>Energy balance</strong> — at every timestep, generation + discharge = load + charge + losses,
+within tolerance. Assert it in a test: a violated balance invalidates every saving we claim.</li>
+<li><strong>Optimizer correctness</strong> — on a small hand-checkable instance, MILP output matches a manually
+computed optimum. Confirm genset minimum-load and N-1 reserve are never violated across a full year.</li>
+<li><strong>The saving is real</strong> — same year, same weather seed, baseline vs AI; report litres and days
+gained across <strong>≥10 random seeds</strong> so the headline isn't a lucky draw.</li>
+<li><strong>Forecast honesty</strong> — MAPE against persistence, and the saving measured under real forecast
+error, not perfect foresight.</li>
+<li><strong>Demo resilience</strong> — full run-through with Wi-Fi disabled; kill the solver mid-demo and
+confirm the rule-based fallback visibly takes over.</li>
+</ul>
+
+<h2>8. Open items for the team</h2>
+<ul>
+<li><strong>Product name</strong> — HIMSHAKTI or KAVACH.</li>
+<li><strong>Internal-hackathon date</strong> from the SPOC, so Phases 4–5 can be scheduled backwards from it.</li>
+</ul>
+
+<footer>SIH 2026 · PS 26061 · MoES / NCPOR · internal team planning document</footer>
+
+</body>
+</html>
