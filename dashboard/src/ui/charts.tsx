@@ -83,7 +83,7 @@ export function DispatchChart({
           dataKey="i"
           type="number"
           domain={[0, plan.length - 1]}
-          ticks={[0, 6, 12, 18, 24, 30, 36, 42, 47]}
+          ticks={[0, 12, 24, 36, 47]}
           tickFormatter={(v: number) => plan[v]?.label ?? ''}
           tick={axisTick(p)}
           stroke={p.axis}
@@ -95,8 +95,9 @@ export function DispatchChart({
           stroke={p.axis}
           axisLine={AXIS_LINE}
           tickLine={false}
-          width={44}
-          label={{ value: 'kW', position: 'insideTopLeft', fill: p.axis, fontSize: 10, dy: -2, dx: 18 }}
+          width={40}
+          tickCount={4}
+          tickFormatter={(v: number) => `${v} kW`}
         />
         {series.map((s) => (
           <Area
@@ -105,10 +106,9 @@ export function DispatchChart({
             name={s.name}
             stackId="gen"
             type="monotone"
-            stroke={s.color}
-            strokeWidth={1}
+            stroke="none"
             fill={s.color}
-            fillOpacity={0.55}
+            fillOpacity={0.92}
             isAnimationActive={false}
           />
         ))}
@@ -169,8 +169,8 @@ export function BurndownChart({
           dataKey="day"
           type="number"
           domain={[0, 365]}
-          ticks={[0, 60, 120, 180, 240, 300, 365]}
-          tickFormatter={(v: number) => `${v} d`}
+          ticks={[0, 120, 240, 365]}
+          tickFormatter={(v: number) => `day ${v}`}
           tick={axisTick(p)}
           stroke={p.axis}
           axisLine={AXIS_LINE}
@@ -182,8 +182,8 @@ export function BurndownChart({
           axisLine={AXIS_LINE}
           tickLine={false}
           width={52}
-          tickFormatter={(v: number) => `${Math.round(v / 1000)}k`}
-          label={{ value: 'L', position: 'insideTopLeft', fill: p.axis, fontSize: 10, dy: -2, dx: 22 }}
+          tickCount={3}
+          tickFormatter={(v: number) => `${Math.round(v / 1000)}k L`}
         />
         <ReferenceLine
           x={resupplyDay}
@@ -256,8 +256,8 @@ export function ForecastChart({ data, p }: { data: ForecastPoint[]; p: Palette }
           dataKey="i"
           type="number"
           domain={[0, data.length - 1]}
-          ticks={[0, 12, 24, 36, 48, 60, 71]}
-          tickFormatter={(v: number) => `+${v} h`}
+          ticks={[0, 24, 48, 71]}
+          tickFormatter={(v: number) => (v === 0 ? 'now' : `+${v} h`)}
           tick={axisTick(p)}
           stroke={p.axis}
           axisLine={AXIS_LINE}
@@ -268,8 +268,9 @@ export function ForecastChart({ data, p }: { data: ForecastPoint[]; p: Palette }
           stroke={p.axis}
           axisLine={AXIS_LINE}
           tickLine={false}
-          width={44}
-          label={{ value: 'kW', position: 'insideTopLeft', fill: p.axis, fontSize: 10, dy: -2, dx: 18 }}
+          width={40}
+          tickCount={3}
+          tickFormatter={(v: number) => `${v} kW`}
         />
         <Area
           dataKey="band"

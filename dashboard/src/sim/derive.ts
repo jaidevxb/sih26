@@ -130,7 +130,7 @@ function buildRecommendations(plan: Step[], inp: Inputs, shifts: ShiftWindow[]):
     const rigid = runHours(24, { ...inp, deferFlex_h: 0 }, 'optimised')
     const saved =
       rigid.reduce((a, p) => a + p.fuel_L, 0) - day1.reduce((a, p) => a + p.fuel_L, 0)
-    if (saved >= 1) {
+    if (saved > 0) {
       out.push({
         id: 'shift',
         time: s.label,
@@ -252,17 +252,17 @@ function buildStatus(plan: Step[], k: Kpis, inp: Inputs): Status {
       message: 'Too little storage to hold N-1, so a second set has to run. Add battery or relax N-1.',
     }
   }
-  if (k.daysAutonomy < inp.daysToResupply * 1.12) {
+  if (k.daysAutonomy < inp.daysToResupply * 1.05) {
     return {
       level: 'caution',
       label: 'TIGHT MARGIN',
-      message: `${k.daysAutonomy} d of fuel against ${inp.daysToResupply} d to the ship — under 12 % spare.`,
+      message: `Only ${k.daysAutonomy - inp.daysToResupply} days of fuel to spare.`,
     }
   }
   return {
     level: 'nominal',
     label: 'SYSTEM NOMINAL',
-    message: `${k.daysAutonomy} d of fuel covers the ${inp.daysToResupply} d to the ship, ${k.daysAutonomy - inp.daysToResupply} d spare.`,
+    message: `${k.daysAutonomy - inp.daysToResupply} days of fuel to spare when the ship arrives.`,
   }
 }
 

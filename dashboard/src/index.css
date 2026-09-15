@@ -566,9 +566,25 @@ table.grid th {
 }
 
 table.grid td {
-  padding: 5px 8px;
+  padding: 6px 8px;
   border-bottom: 1px solid var(--rail);
   vertical-align: middle;
+}
+
+/* The reasoning sits under the action, so the row stays two columns wide. */
+.rec-why {
+  font-size: 11px;
+  color: var(--fg-muted);
+  margin-top: 1px;
+}
+
+.sr-head {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 table.grid tr:last-child td {

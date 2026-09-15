@@ -130,7 +130,7 @@ export default function App() {
           unit="L"
           bg="#1B2836"
           bar={k.tankFrac}
-          sub={<>{(k.tankFrac * 100).toFixed(0)} % of one year's delivery</>}
+          sub={<>{(k.tankFrac * 100).toFixed(0)} % of a year's delivery left</>}
         />
         <KpiTile
           label="Power needed now"
@@ -234,19 +234,16 @@ export default function App() {
       </div>
 
       {/* ------------------------------------------ row 4: recommendations */}
-      <Panel
-        title="What the system recommends right now"
-        note={dash.status.message}
-        bodyClass="p-0 scroll"
-      >
+      <Panel title="What the system recommends right now" bodyClass="p-0 scroll">
         <table className="grid">
           <thead>
             <tr>
-              <th style={{ width: 70 }}>Time</th>
-              <th style={{ width: 260 }}>Do this</th>
-              <th>Because</th>
-              <th style={{ width: 90, textAlign: 'right' }}>Fuel saved</th>
-              <th style={{ width: 140 }} />
+              <th style={{ width: 72 }}>When</th>
+              <th>What to do</th>
+              <th style={{ width: 110, textAlign: 'right' }}>Fuel saved</th>
+              <th style={{ width: 150 }}>
+                <span className="sr-head">Decision</span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -255,8 +252,10 @@ export default function App() {
               return (
                 <tr key={r.id} data-state={state}>
                   <td className="mono">{r.time}</td>
-                  <td>{r.action}</td>
-                  <td style={{ color: 'var(--fg-muted)' }}>{r.reason}</td>
+                  <td>
+                    <div>{r.action}</div>
+                    <div className="rec-why">{r.reason}</div>
+                  </td>
                   <td className="mono" style={{ textAlign: 'right', fontWeight: 600 }}>
                     {fmt.litresSmall(r.fuelSaved_L)} L
                   </td>

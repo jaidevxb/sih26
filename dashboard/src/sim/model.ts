@@ -25,7 +25,7 @@ export const PLANT = {
   boilerKWhPerL: 8.5,
 
   /** One annual delivery. Sized to a year of optimised burn — not baseline. */
-  tankCapacity_L: 215_000,
+  tankCapacity_L: 234_000,
 
   /** What an operator actually leaves the lead set at, all year. */
   baselineLoadFactor: 0.75,
