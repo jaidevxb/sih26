@@ -1,7 +1,8 @@
 [build]
   base = "dashboard"
   command = "npm run build"
-  publish = "dashboard/dist"
+  # Relative to `base`, so this is dashboard/dist.
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
