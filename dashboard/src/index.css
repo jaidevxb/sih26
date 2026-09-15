@@ -90,7 +90,7 @@ table,
 .page {
   height: 100%;
   display: grid;
-  grid-template-rows: 38px 92px minmax(0, 1.12fr) minmax(0, 1fr) minmax(150px, auto);
+  grid-template-rows: 38px 104px minmax(0, 1.12fr) minmax(0, 1fr) minmax(150px, auto);
   gap: 7px;
   padding: 7px;
 }
@@ -150,9 +150,10 @@ table,
   border-color: rgb(255 255 255 / 0.35);
 }
 
+/* The hero tile is deliberately wider: it carries the one number that matters. */
 .row-kpi {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1.75fr 1fr 1fr 1fr;
   gap: 7px;
   min-height: 0;
 }
@@ -293,11 +294,11 @@ table,
 }
 
 .kpi-label {
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  opacity: 0.78;
+  opacity: 0.8;
 }
 
 .kpi-value {
@@ -309,19 +310,28 @@ table,
   white-space: nowrap;
 }
 
+.kpi-hero .kpi-value {
+  font-size: 52px;
+}
+
 .kpi-unit {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   opacity: 0.8;
-  margin-left: 3px;
+  margin-left: 4px;
 }
 
 .kpi-sub {
-  font-size: 11px;
-  opacity: 0.85;
+  font-size: 12px;
+  opacity: 0.88;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.kpi-hero .kpi-sub {
+  font-size: 13px;
+  opacity: 1;
 }
 
 .kpi-bar {

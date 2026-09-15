@@ -7,17 +7,20 @@ export function KpiTile({
   sub,
   bg,
   bar,
+  hero = false,
 }: {
   label: string
   value: string
   unit?: string
   sub: ReactNode
   bg: string
-  /** 0–1; renders the thin fill bar instead of a sub-line above the caption. */
+  /** 0–1; renders a thin fill bar above the caption. */
   bar?: number
+  /** The one number a first-time viewer should read. */
+  hero?: boolean
 }) {
   return (
-    <div className="kpi" style={{ background: bg }}>
+    <div className={`kpi${hero ? ' kpi-hero' : ''}`} style={{ background: bg }}>
       <div className="kpi-label">{label}</div>
       <div className="kpi-value">
         {value}

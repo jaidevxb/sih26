@@ -11,18 +11,18 @@ interface SliderSpec {
 }
 
 const GROUP_A: SliderSpec[] = [
-  { key: 'crew', name: 'Crew on station', min: 15, max: 60, step: 1, unit: 'pax' },
+  { key: 'crew', name: 'People on station', min: 15, max: 60, step: 1, unit: 'people' },
   { key: 'outsideTemp_C', name: 'Outside temperature', min: -45, max: 0, step: 1, unit: '°C' },
   { key: 'windSpeed_ms', name: 'Wind speed', min: 0, max: 35, step: 1, unit: 'm/s' },
-  { key: 'solar_pct', name: 'Solar irradiance', min: 0, max: 100, step: 1, unit: '%' },
-  { key: 'daysToResupply', name: 'Days until resupply ship', min: 30, max: 365, step: 1, unit: 'd' },
+  { key: 'solar_pct', name: 'Sunlight', min: 0, max: 100, step: 1, unit: '%' },
+  { key: 'daysToResupply', name: 'Days until the ship arrives', min: 30, max: 365, step: 1, unit: 'days' },
 ]
 
 const GROUP_B: SliderSpec[] = [
-  { key: 'minStableLoad_pct', name: 'Genset min stable load', min: 20, max: 60, step: 1, unit: '%' },
-  { key: 'batteryCapacity_kWh', name: 'Battery capacity', min: 0, max: 500, step: 10, unit: 'kWh' },
-  { key: 'batteryDerate_pct', name: 'Battery cold derating', min: 0, max: 50, step: 1, unit: '%' },
-  { key: 'deferFlex_h', name: 'Deferrable load flexibility', min: 0, max: 12, step: 1, unit: 'h' },
+  { key: 'minStableLoad_pct', name: 'Lowest a genset may run at', min: 20, max: 60, step: 1, unit: '%' },
+  { key: 'batteryCapacity_kWh', name: 'Battery size', min: 0, max: 500, step: 10, unit: 'kWh' },
+  { key: 'batteryDerate_pct', name: 'Battery lost to the cold', min: 0, max: 50, step: 1, unit: '%' },
+  { key: 'deferFlex_h', name: 'How far jobs can be moved', min: 0, max: 12, step: 1, unit: 'hours' },
 ]
 
 function Slider({
@@ -68,7 +68,7 @@ export function ControlPanel({
   return (
     <>
       <div className="group-head" style={{ borderTop: 'none' }}>
-        A · Simulation inputs
+        Conditions at the station
       </div>
       {GROUP_A.map((s) => (
         <Slider
@@ -79,7 +79,7 @@ export function ControlPanel({
         />
       ))}
 
-      <div className="group-head">B · System constraints</div>
+      <div className="group-head">Equipment and rules</div>
       {GROUP_B.map((s) => (
         <Slider
           key={s.key}
@@ -91,7 +91,7 @@ export function ControlPanel({
 
       <div className="ctl">
         <div className="ctl-row" style={{ marginBottom: 0 }}>
-          <span className="ctl-name">N-1 reserve enforced</span>
+          <span className="ctl-name">Always keep a backup ready (N-1)</span>
           <span className="toggle">
             <button
               type="button"
@@ -114,7 +114,7 @@ export function ControlPanel({
           <div className="banner banner-alarm" style={{ marginTop: 6 }}>
             <AlertTriangle size={13} strokeWidth={2} />
             <span>
-              No contingency cover held. Losing the running set drops the station.
+              Saves fuel, but if the running genset trips the whole station goes dark.
             </span>
           </div>
         )}

@@ -134,8 +134,8 @@ function buildRecommendations(plan: Step[], inp: Inputs, shifts: ShiftWindow[]):
       out.push({
         id: 'shift',
         time: s.label,
-        action: 'Run snow melter + water maker',
-        reason: `Windiest ${PLANT.deferHours} h inside the ${inp.deferFlex_h} h window`,
+        action: 'Run the snow melter now',
+        reason: `Windiest ${PLANT.deferHours} hours of the day — free power`,
         fuelSaved_L: saved,
       })
     }
@@ -158,8 +158,8 @@ function buildRecommendations(plan: Step[], inp: Inputs, shifts: ShiftWindow[]):
       out.push({
         id: 'coast',
         time: s.label,
-        action: `Stop Genset 1 for ${hours} h`,
-        reason: `Battery at ${(s.soc * 100).toFixed(0)} % covers ${s.load_kW.toFixed(0)} kW; boiler takes the heat`,
+        action: `Switch Genset 1 off for ${hours} hours`,
+        reason: `Battery is at ${(s.soc * 100).toFixed(0)} % and can carry the station; boiler covers the heating`,
         fuelSaved_L: saved,
       })
     }
@@ -172,8 +172,8 @@ function buildRecommendations(plan: Step[], inp: Inputs, shifts: ShiftWindow[]):
       out.push({
         id: 'n1',
         time: single[0].label,
-        action: 'Keep Genset 2 shut down',
-        reason: `Battery holds N-1 reserve for ${single.length} h`,
+        action: 'Keep Genset 2 switched off',
+        reason: `Battery is the backup instead, for ${single.length} hours — one genset does the job of two`,
         fuelSaved_L: single.length * 0.08 * PLANT.gensetRated_kW,
       })
     }
@@ -188,8 +188,8 @@ function buildRecommendations(plan: Step[], inp: Inputs, shifts: ShiftWindow[]):
       out.push({
         id: 'dump',
         time: dump[0].label,
-        action: 'Send surplus to heating loop',
-        reason: `${kWh.toFixed(0)} kWh that would otherwise be spilled`,
+        action: 'Send spare power to the heaters',
+        reason: `${kWh.toFixed(0)} kWh of wind that would otherwise be thrown away`,
         fuelSaved_L: saved,
       })
     }
@@ -201,8 +201,8 @@ function buildRecommendations(plan: Step[], inp: Inputs, shifts: ShiftWindow[]):
     out.push({
       id: 'precharge',
       time: cold.label,
-      action: 'Charge battery before cold peak',
-      reason: `${cold.temp_C.toFixed(0)} °C outside, ${cold.heatDemand_kW.toFixed(0)} kW of heat needed`,
+      action: 'Charge the battery before it gets colder',
+      reason: `Drops to ${cold.temp_C.toFixed(0)} °C — heating will need ${cold.heatDemand_kW.toFixed(0)} kW`,
       fuelSaved_L: cold.heatDemand_kW / PLANT.boilerKWhPerL / 4,
     })
   }
@@ -220,14 +220,14 @@ function buildStatus(plan: Step[], k: Kpis, inp: Inputs): Status {
     const worst = Math.max(...plan.map((p) => p.unserved_kW))
     return {
       level: 'alarm',
-      label: 'LOAD SHED',
+      label: 'POWER SHORT',
       message: `Short of ${worst.toFixed(0)} kW — generation and storage cannot meet demand.`,
     }
   }
   if (!inp.n1Reserve) {
     return {
       level: 'alarm',
-      label: 'N-1 DISABLED',
+      label: 'NO BACKUP',
       message: 'No backup held. Fuel burn is lower, but losing the running set drops the station.',
     }
   }
@@ -241,21 +241,21 @@ function buildStatus(plan: Step[], k: Kpis, inp: Inputs): Status {
   if (setOut) {
     return {
       level: 'caution',
-      label: 'SET OUT',
+      label: 'GENSET DOWN',
       message: 'One genset down. The other runs continuously — no backup left.',
     }
   }
   if (k.savedPct < 0) {
     return {
       level: 'caution',
-      label: 'NO MARGIN',
+      label: 'NO SAVING',
       message: 'Too little storage to hold N-1, so a second set has to run. Add battery or relax N-1.',
     }
   }
   if (k.daysAutonomy < inp.daysToResupply * 1.12) {
     return {
       level: 'caution',
-      label: 'MARGIN THIN',
+      label: 'TIGHT MARGIN',
       message: `${k.daysAutonomy} d of fuel against ${inp.daysToResupply} d to the ship — under 12 % spare.`,
     }
   }

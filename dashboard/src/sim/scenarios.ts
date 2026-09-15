@@ -14,7 +14,7 @@ export interface Scenario {
 export const SCENARIOS: Scenario[] = [
   {
     id: 'blizzard',
-    label: 'BLIZZARD 5 D',
+    label: 'BLIZZARD',
     apply: (b) => ({
       ...b,
       outsideTemp_C: -38,
@@ -28,28 +28,28 @@ export const SCENARIOS: Scenario[] = [
       },
     }),
     response:
-      'Wind farm locked out above the 25 m/s cut-out and heat demand up to ~135 kW: the plan holds a set online through the storm, suspends nothing critical, and lets the boiler carry the thermal peak.',
+      'Too windy for the turbines — they shut down above 25 m/s — and the cold pushes heating to about 135 kW. The plan keeps a genset running right through the storm and lets the boiler handle the extra heat.',
   },
   {
     id: 'gensetFailure',
-    label: 'GENSET 1 FAILURE',
+    label: 'GENSET FAILS',
     apply: (b) => ({ ...b, gensetsAvailable: 1 }),
     response:
-      'One set left. It is held online continuously — no shutdown-on-battery — and the pack is kept at a raised state of charge as the only contingency cover. Fuel burn barely moves; the exposure is what changed.',
+      'Only one genset left, so it now runs non-stop — it can no longer be switched off onto the battery. Fuel burn barely changes; what changes is the risk, because there is no backup any more.',
   },
   {
     id: 'shipDelay',
-    label: 'SHIP DELAYED 21 D',
+    label: 'SHIP 21 D LATE',
     apply: (b) => ({
       ...b,
       daysToResupply: Math.min(365, b.daysToResupply + 21),
     }),
     response:
-      'Resupply pushed out 21 days. Days-of-autonomy is unchanged — the fuel on hand is what it is — so the question is whether the margin still covers the longer wait.',
+      'The ship is 21 days late. The fuel in the tank has not changed, so the only question is whether it still stretches far enough. Watch the dashed line move on the yearly chart.',
   },
   {
     id: 'crewSurge',
-    label: 'CREW SURGE',
+    label: 'SUMMER CREW',
     apply: (b) => ({
       ...b,
       crew: 52,
@@ -57,7 +57,7 @@ export const SCENARIOS: Scenario[] = [
       solar_pct: 62,
     }),
     response:
-      'Summer campaign: 52 on station, milder air and real solar. Base and deferrable load both rise, so the plan runs the sets harder and leans on the longer daylight window for the shiftable block.',
+      'Summer season: 52 people on station, milder air and real sunlight. Demand jumps, so the gensets run harder — and the plan moves the heavy jobs into the long daylight hours.',
   },
 ]
 

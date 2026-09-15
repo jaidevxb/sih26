@@ -110,59 +110,48 @@ export default function App() {
       {/* --------------------------------------------------------- kpi row 1 */}
       <div className="row-kpi">
         <KpiTile
-          label="Days of autonomy"
+          hero
+          label="Days of fuel left"
           value={String(k.daysAutonomy)}
-          unit="d"
+          unit="days"
           bg="#0B2E5C"
           sub={
             <>
-              vs {k.daysAutonomyBaseline} baseline · {gained >= 0 ? '+' : ''}
-              {gained} d gained
+              Station's current practice lasts {k.daysAutonomyBaseline} days.{' '}
+              <strong>
+                Our plan adds {gained >= 0 ? gained : 0} day{Math.abs(gained) === 1 ? '' : 's'}.
+              </strong>
             </>
           }
         />
         <KpiTile
-          label="Fuel remaining"
+          label="Fuel in the tank"
           value={fmt.litres(k.fuelRemaining_L)}
           unit="L"
           bg="#1B2836"
           bar={k.tankFrac}
-          sub={
-            <>
-              {(k.tankFrac * 100).toFixed(0)} % of {fmt.litres(PLANT.tankCapacity_L)} L farm ·{' '}
-              {k.daysElapsed} d since ship
-            </>
-          }
+          sub={<>{(k.tankFrac * 100).toFixed(0)} % of one year's delivery</>}
         />
         <KpiTile
-          label="Current load"
+          label="Power needed now"
           value={fmt.kW(currentLoad)}
           unit="kW"
           bg="#2E6B4F"
-          sub={
-            <>
-              peak today {fmt.kW(k.peakToday_kW)} kW · heat{' '}
-              {fmt.kW(dash.plan[nowIndex]?.heatDemand_kW ?? 0)} kW
-            </>
-          }
+          sub={<>Highest today {fmt.kW(k.peakToday_kW)} kW</>}
         />
         <KpiTile
-          label="Fuel saved YTD"
+          label="Fuel saved so far"
           value={fmt.litres(Math.abs(k.fuelSavedYtd_L))}
           unit="L"
           bg={k.fuelSavedYtd_L >= 0 ? '#1E6FB8' : '#C0392B'}
-          sub={
-            <>
-              {fmt.pct1(k.savedPct)} % vs baseline · {Math.round(k.dailyBurn_L)} L/d now
-            </>
-          }
+          sub={<>{fmt.pct1(k.savedPct)} % vs current practice</>}
         />
       </div>
 
       {/* ------------------------------------------------ row 2: plan + control */}
       <div className="row-main">
         <Panel
-          title="48-hour dispatch plan"
+          title="Next 48 hours — where the power comes from"
           right={
             <Legend
               items={[
@@ -201,7 +190,11 @@ export default function App() {
               <span>{active.response}</span>
             </div>
           )}
-          <Panel title="Control panel" note={scenario ? 'scenario active' : 'live'} bodyClass="p-0 scroll">
+          <Panel
+            title="Try it — move any slider"
+            note={scenario ? 'scenario on' : 'live'}
+            bodyClass="p-0 scroll"
+          >
             <ControlPanel inputs={inputs} onChange={patch} />
           </Panel>
         </div>
@@ -210,12 +203,12 @@ export default function App() {
       {/* --------------------------------------- row 3: burndown + forecast */}
       <div className="row-charts">
         <Panel
-          title="Annual fuel burndown"
+          title="Fuel left over the year — will it reach the ship?"
           right={
             <Legend
               items={[
-                { name: 'AI optimised', color: p.optimised },
-                { name: 'Baseline', color: p.baseline },
+                { name: 'Our plan', color: p.optimised },
+                { name: 'Current practice', color: p.baseline },
               ]}
             />
           }
@@ -224,13 +217,13 @@ export default function App() {
           <BurndownChart data={dash.burndown} resupplyDay={dash.resupplyDay} p={p} />
         </Panel>
         <Panel
-          title="Load & heat forecast — 72 h"
+          title="What's coming — next 72 hours"
           right={
             <Legend
               items={[
-                { name: 'Electrical P50', color: p.optimised },
-                { name: 'P10–P90', color: p.band },
-                { name: 'Heat demand', color: p.heat, dashed: true },
+                { name: 'Power needed', color: p.optimised },
+                { name: 'Likely range', color: p.band },
+                { name: 'Heat needed', color: p.heat, dashed: true },
               ]}
             />
           }
@@ -242,7 +235,7 @@ export default function App() {
 
       {/* ------------------------------------------ row 4: recommendations */}
       <Panel
-        title="Active recommendations"
+        title="What the system recommends right now"
         note={dash.status.message}
         bodyClass="p-0 scroll"
       >
@@ -250,8 +243,8 @@ export default function App() {
           <thead>
             <tr>
               <th style={{ width: 70 }}>Time</th>
-              <th style={{ width: 260 }}>Action</th>
-              <th>Reason</th>
+              <th style={{ width: 260 }}>Do this</th>
+              <th>Because</th>
               <th style={{ width: 90, textAlign: 'right' }}>Fuel saved</th>
               <th style={{ width: 140 }} />
             </tr>
